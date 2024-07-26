@@ -29,7 +29,7 @@
       results.innerHTML = "";
 
       const xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://nyt-pera.ddns.net/?words_file=30k.txt&allowed_letters=" +  allowed_letters + "&find_all_solutions=true&debug=false&limit=5", true);
+      xhr.open("GET", "https://nyt-pera.ddns.net/?words_file=30k.txt&allowed_letters=" +  allowed_letters + "&find_all_solutions=true&debug=false&limit=5", true);
 
       xhr.setRequestHeader("Cache-Control", "no-cache");
       xhr.setRequestHeader("Content-Type", "application/json");
