@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <title>NYT Letter Boxed Solver</title>
     <script type="text/javascript">
+      function check() {
+        const top = document.getElementById("top").value;
+        const left = document.getElementById("left").value;
+        const right = document.getElementById("right").value;
+        const bottom = document.getElementById("bottom").value;
+        if (top === "" || left === "" || right === "" || bottom === "") {
+          console.log("Fill out all inputs!");
+
+          return false;
+        }
+        console.log("All inputs filled out!");
+
+        return true;
+      }
     function solve() {
       const top = document.getElementById("top").value;
       const left = document.getElementById("left").value;
@@ -11,40 +25,214 @@
       const bottom = document.getElementById("bottom").value;
       allowed_letters = top + left + right + bottom;
 
-      const results = document.getElementById("results");
+      const results = document.getElementById("result-lists");
       results.innerHTML = "";
 
       const xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com/", true);
+      xhr.open("GET", "https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com/?words_file=30k.txt&allowed_letters=" +  allowed_letters + "&find_all_solutions=True&debug=False&limit=5", true);
 
-      xhr.setRequestHeader("Content-Type", "application/json"); // prevent cors, allow https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com
+      xhr.setRequestHeader("Cache-Control", "no-cache");
+      xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
+        if (xhr.readyState === 4 && xhr.status === 200) {          
           const data = JSON.parse(xhr.responseText);
-          data.forEach((word) => {
-            const p = document.createElement("p");
-            p.innerHTML = word;
-            results.appendChild(p);
+
+          if (data.length === 0) {
+            const divList = document.createElement("div");
+            divList.className = "list";
+            const h3 = document.createElement("h3");
+            h3.innerHTML = "No solutions found!";
+            divList.appendChild(h3);
+            results.appendChild(divList);
+            return;
+          }
+
+          data.forEach((sol) => {
+            const divList = document.createElement("div");
+            divList.className = "list";
+            const h3 = document.createElement("h3");
+            h3.innerHTML = "Solution " + (data.indexOf(sol) + 1);
+            divList.appendChild(h3);
+            const ul = document.createElement("ul");
+            sol.forEach((word) => {
+              const li = document.createElement("li");
+              li.innerHTML = word;
+              ul.appendChild(li);
+            });
+            divList.appendChild(ul);
+            results.appendChild(divList);
+
           });
         }
       };
-      // send to https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com/?words_file=30k.txt&allowed_letters=jhtawouinbge&find_all_solutions=True&debug=False
-
-      xhr.send(JSON.stringify({ allowed_letters }));
+      xhr.send();
     }
   </script>
+  <style>
+    .content {
+        text-align: center;
+        margin-bottom: 20px;
+        margin-right: 50px;
+    }
+
+    .title {
+        font-size: 24px;
+        margin: 0;
+        color: #333;
+    }
+
+    .description {
+        font-size: 16px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
+    .top-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50%;
+    }
+
+    .square-container {
+        width: 30vw; /* 30% of the viewport width */
+        height: 15vh; /* 30% of the viewport height */
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .square {
+        width: 100%;
+        height: 100%;
+        background-color: #f0f0f0;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .input {
+        position: absolute;
+        width: 60px;
+        height: 20px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .input.top {
+        top: -10px; /* Slightly overlap the square */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .input.bottom {
+        bottom: -10px; /* Slightly overlap the square */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .input.left {
+        left: -10px; /* Slightly overlap the square */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .input.right {
+        right: -10px; /* Slightly overlap the square */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .solve-button {
+        font-size: 14px;
+        padding: 8px 16px;
+        border: none;
+        background-color: #007BFF;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .solve-button:hover {
+        background-color: #0056b3;
+    }
+    #result-lists {
+        width: 80%;
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-around;
+        text-align: left;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .list {
+        flex: 1;
+        margin: 0 10px;
+    }
+
+    .list h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .list ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .list ul li {
+        padding: 5px 0;
+        color: #555;
+        border-bottom: 1px solid #eee;
+    }
+
+    .list ul li:last-child {
+        border-bottom: none;
+    }
+
+
+  </style>
   </head>
   <body>
-    <!-- square with 4 inputs on each side -->
-    <div id="square">
-      <input type="text" id="top" placeholder="Top" />
-      <input type="text" id="left" placeholder="Left" />
-      <input type="text" id="right" placeholder="Right" />
-      <input type="text" id="bottom" placeholder="Bottom" />
+    <div class="top-content">
+      <div class="content">
+        <h1>NYT Letter Boxed Solver</h1>
+        <p>Try it yourself <a href="https://www.nytimes.com/puzzles/letter-boxed">here</a></p>
+      </div>
+      <!-- square with 4 inputs on each side -->
+      <div class="square-container">
+        <div class="square">
+          <form onsubmit="return false">
+          <input type="text" class="input top" id="top" placeholder="Top">
+          <input type="text" class="input bottom" id="bottom" placeholder="Bottom">
+          <input type="text" class="input left" id="left" placeholder="Left">
+          <input type="text" class="input right" id="right" placeholder="Right">
+          <input type="submit" class="solve-button" onclick="if (!check()) {alert('Fill out all inputs!');}; solve()" value="Solve">
+          </form>
+        </div>
+      </div>
     </div>
-    <button id="solve" onclick="solve()">Solve</button>
 
-    <div id="results"></div>
+    <div id="result-lists">
+    </div>
+
   </body>
 </html>

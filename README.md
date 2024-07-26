@@ -5,6 +5,8 @@ Solve NY Times' [Letter Boxed game](https://www.nytimes.com/puzzles/letter-boxed
 
 `python letter-boxed.py -l jhtawouinbge`
 
+Demo at [alexperathoner.github.io/nyt-letter-boxed](https://alexperathoner.github.io/nyt-letter-boxed/)
+
 
 ### Parameters:
 - `-l` allowed letters. For example, if today's Letter Boxed looks like this: <br><img width="15%" src="Screens/icon.png"></img>
