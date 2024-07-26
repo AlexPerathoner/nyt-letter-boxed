@@ -179,7 +179,7 @@ def check_params(words_file, allowed_letters, find_all_solutions, debug):
         return ["Wrong length"]
     return []
 
-def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug):
+def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug, limit=-1):
     if check_params(words_file, allowed_letters, find_all_solutions, debug) != []:
         return {"Errors": check_params(words_file, allowed_letters, find_all_solutions, debug)}
     global solutions
@@ -202,6 +202,8 @@ def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug):
 
     solutions = [solution for solution in solutions if len(solution) < 6]
     solutions.sort(key=len)
+    if limit != -1:
+        solutions = solutions[:int(limit)]
     return solutions
 
 def main():

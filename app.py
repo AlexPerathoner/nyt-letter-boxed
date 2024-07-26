@@ -16,7 +16,8 @@ class LetterBoxed(Resource):
         allowed_letters = request.args.get('allowed_letters')
         find_all_solutions = request.args.get('find_all_solutions')
         debug = request.args.get('debug')
-        solutions = letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug)
+        limit = request.args.get('limit')
+        solutions = letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug, limit)
         return jsonify(solutions)
 
 api.add_resource(LetterBoxed, '/')
