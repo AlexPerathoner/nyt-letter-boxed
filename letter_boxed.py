@@ -43,8 +43,8 @@ def deal_with_command_line_args(args):
     print("Debug: ", DEBUG)
     print("Find all solutions: ", FIND_ALL_SOLUTIONS)
 
-def import_words():
-    with open(WORDS_FILE, 'r', encoding='utf-8') as f:
+def import_words(words_file):
+    with open(words_file, 'r', encoding='utf-8') as f:
         words = f.readlines()
         # remove \n
         words = [word.strip() for word in words]
@@ -123,9 +123,8 @@ def count_letters_in_solution(solution):
 def all_letters_in_solution(solution, allowed_letters):
     return count_letters_in_solution(solution) == len(allowed_letters)
 
-def find_solution(solution, map_words_letters_count, detailed_print=False):
+def find_solution(solution, map_words_letters_count, find_all_solutions, detailed_print=False):
     global solutions
-    global FIND_ALL_SOLUTIONS
     if detailed_print:
         print(solution)
     old_count = count_letters_in_solution(solution)
@@ -157,13 +156,13 @@ def find_solution(solution, map_words_letters_count, detailed_print=False):
         # if all letters are in the solution, print and exit
         if all_letters_in_solution(solution, ALLOWED_LETTERS):
             solutions.append(solution)
-            if detailed_print or (not FIND_ALL_SOLUTIONS):
+            if detailed_print or (not find_all_solutions):
                 print("Solution found: ")
                 print(solution)
-                if not FIND_ALL_SOLUTIONS:
+                if not find_all_solutions:
                     sys.exit()
             return True
-        if find_solution(solution, map_words_letters_count):
+        if find_solution(solution, map_words_letters_count, find_all_solutions, detailed_print):
             return True
         else:
             none_helped = True
@@ -172,16 +171,23 @@ def find_solution(solution, map_words_letters_count, detailed_print=False):
         solution.pop()
         return [False]
 
-def main():
-    # read arguments in command line
-    deal_with_command_line_args(sys.argv[1:])
+def check_params(words_file, allowed_letters, find_all_solutions, debug):
+    if words_file == None or allowed_letters == None or find_all_solutions == None or debug == None:
+        return ["Missing parameters"]
+    if len(allowed_letters) != 12:
+        print("Allowed letters must be 12")
+        return ["Wrong length"]
+    return []
 
+def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug):
+    if check_params(words_file, allowed_letters, find_all_solutions, debug) != []:
+        return {"Errors": check_params(words_file, allowed_letters, find_all_solutions, debug)}
     global solutions
-    words = import_words()
-    allowed_by_letters = filter_by_allowed_letters(words, ALLOWED_LETTERS)
+    words = import_words(words_file)
+    allowed_by_letters = filter_by_allowed_letters(words, allowed_letters)
     allowed_by_double = remove_double_letters(allowed_by_letters)
 
-    letter_groups = calculate_group(ALLOWED_LETTERS)
+    letter_groups = calculate_group(allowed_letters)
     allowed_by_group = filter_by_group(allowed_by_double, letter_groups)
     allowed_by_group = filter_by_length(allowed_by_group, 2) # optimization - there's certainly something better cmon
     allowed_by_group.sort(key=len, reverse=True) # order by length descending, let's try the longest words first to get rid of more letters at once
@@ -191,18 +197,26 @@ def main():
     map_words_letters_count = generate_map_words_letters_count(allowed_by_group)
 
     for word in allowed_by_group:
-        find_solution([word], map_words_letters_count, DEBUG)
+        find_solution([word], map_words_letters_count, find_all_solutions, debug)
     # filter solution by length (max 5 words) and sort by length to show the shortest solutions first
 
     solutions = [solution for solution in solutions if len(solution) < 6]
     solutions.sort(key=len)
+    return solutions
+
+def main():
+    # read arguments in command line
+    deal_with_command_line_args(sys.argv[1:])
+
+    solutions = letter_boxed_solver(WORDS_FILE, ALLOWED_LETTERS, FIND_ALL_SOLUTIONS, DEBUG)
 
     print("\nSolutions:")
     for solution in solutions:
         print(solution)
 
     print("Found solutions: ", len(solutions))
-    print("Shortest solution: " + str(solutions[0]) + " (" + str(len(solutions[0])) + " words)")
+    if len(solutions) > 0:
+        print("Shortest solution: " + str(solutions[0]) + " (" + str(len(solutions[0])) + " words)")
 
 if __name__ == '__main__':
     main()

@@ -1,2 +1,4 @@
 .DS_Store
 filtered_words.txt
+env*
+__pycache__*
