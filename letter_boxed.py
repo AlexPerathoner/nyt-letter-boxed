@@ -198,10 +198,11 @@ def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug, 
 
     for word in allowed_by_group:
         find_solution([word], map_words_letters_count, find_all_solutions, debug)
+    
     # filter solution by length (max 5 words) and sort by length to show the shortest solutions first
-
-    solutions = [solution for solution in solutions if len(solution) < 6]
+    # solutions = [solution for solution in solutions if len(solution) < 6]
     solutions.sort(key=len)
+    
     if limit != -1:
         solutions = solutions[:int(limit)]
     return solutions
