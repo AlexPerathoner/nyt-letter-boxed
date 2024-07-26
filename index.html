@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>NYT Letter Boxed Solver</title>
+    <script type="text/javascript">
+    function solve() {
+      const top = document.getElementById("top").value;
+      const left = document.getElementById("left").value;
+      const right = document.getElementById("right").value;
+      const bottom = document.getElementById("bottom").value;
+      allowed_letters = top + left + right + bottom;
+
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com/", true);
+
+      xhr.setRequestHeader("Content-Type", "application/json"); // prevent cors, allow https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com
+      xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          data.forEach((word) => {
+            const p = document.createElement("p");
+            p.innerHTML = word;
+            results.appendChild(p);
+          });
+        }
+      };
+      // send to https://nyt-letter-boxed-61be00f8e5e6.herokuapp.com/?words_file=30k.txt&allowed_letters=jhtawouinbge&find_all_solutions=True&debug=False
+
+      xhr.send(JSON.stringify({ allowed_letters }));
+    }
+  </script>
+  </head>
+  <body>
+    <!-- square with 4 inputs on each side -->
+    <div id="square">
+      <input type="text" id="top" placeholder="Top" />
+      <input type="text" id="left" placeholder="Left" />
+      <input type="text" id="right" placeholder="Right" />
+      <input type="text" id="bottom" placeholder="Bottom" />
+    </div>
+    <button id="solve" onclick="solve()">Solve</button>
+
+    <div id="results"></div>
+  </body>
+</html>

@@ -1,11 +1,16 @@
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 from letter_boxed import letter_boxed_solver
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
 
+
 class LetterBoxed(Resource):
+    @cross_origin()
     def get(self): # parameters in query: words_file, allowed_letters, debug, find_all_solutions
         words_file = request.args.get('words_file')
         allowed_letters = request.args.get('allowed_letters')
