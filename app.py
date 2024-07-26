@@ -26,4 +26,8 @@ api.add_resource(LetterBoxed, '/')
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5001, url_scheme='https')
+    print("Now serving")
+#    serve(app, host="0.0.0.0", port=5000, url_scheme='https')
+
+    context = ('/etc/letsencrypt/live/nytalexpera.duckdns.org/fullchain.pem', '/etc/letsencrypt/live/nytalexpera.duckdns.org/privkey.pem') # certificate and key files
+    app.run(host='192.168.0.197', port=5000) #, ssl_context=context) # use flask run --host=0.0.0.0 instead
