@@ -1,0 +1,15 @@
+services:
+  flask_app:
+    build: .
+    container_name: flask_app
+    networks:
+      - nginxproxymanager_default
+    volumes:
+      - ./logs:/app/logs
+    ports:
+      - "5000:5000"
+    restart: always
+
+networks:
+  nginxproxymanager_default:
+    external: true

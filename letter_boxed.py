@@ -183,6 +183,7 @@ def letter_boxed_solver(words_file, allowed_letters, find_all_solutions, debug, 
     if check_params(words_file, allowed_letters, find_all_solutions, debug) != []:
         return {"Errors": check_params(words_file, allowed_letters, find_all_solutions, debug)}
     global solutions
+    solutions = []
     words = import_words(words_file)
     allowed_by_letters = filter_by_allowed_letters(words, allowed_letters)
     allowed_by_double = remove_double_letters(allowed_by_letters)
