@@ -18,7 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Create a directory for logs
 RUN mkdir -p /app/logs
 
-# no ports exposed. Defined in docker-compose.yml
+# Expose the port the app runs on, not necessary (is added to nginx network in docker-compose), but nice to have in docker ps listing
+EXPOSE 5000
 
 # Command to run the Flask application, nohup redirects output to nohup.out
 CMD nohup flask run --host=0.0.0.0 > /app/logs/flask.log 2>&1
