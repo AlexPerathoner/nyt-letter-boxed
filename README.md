@@ -7,6 +7,9 @@ Solve NY Times' [Letter Boxed game](https://www.nytimes.com/puzzles/letter-boxed
 
 Demo at [alexperathoner.github.io/nyt-letter-boxed](https://alexperathoner.github.io/nyt-letter-boxed/)
 
+### Example
+
+![example screen](Screens/example.png).
 
 ### Parameters:
 - `-l` allowed letters. For example, if today's Letter Boxed looks like this: <br><img width="15%" src="Screens/icon.png"></img>
@@ -21,6 +24,7 @@ Demo at [alexperathoner.github.io/nyt-letter-boxed](https://alexperathoner.githu
 ## How it works
 1. Filter all words that can't be used with the given letters (e.g. `hello` in the screenshot above isn't allowed, as `l` isn't in the given letters) and group letters (e.g. `wow` isn't allowed, as letters on one side of the square can't be followed by letters on the same side).
 2. Recursively search for next "best" possible word. Possible words are words that start with the letter the previous word is ending in. "Best" is the word that adds most yet missing letters of the puzzle. If we're searching for all solutions we won't stop after the first correct series of words is found. We go through all possible combinations with the given file of words, and then search for the solution using the least amount of words. For the puzzle above, this is `['banjo', 'outweigh']`.
+
 
 
 ### Limitations
